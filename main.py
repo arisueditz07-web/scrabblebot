@@ -8,7 +8,7 @@ from telegram.ext import (
 from collections import Counter
 import requests
 
-TOKEN = "8698359891:AAHDZVLlgQWoxpoteUCkbRaTY1YSMY2cvDQ"
+TOKEN = "8698359891:AAEzbpSztC5A_2VV87zVsUhhI6gFAEct3Cw"
 
 # Download full dictionary
 url = "https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt"
