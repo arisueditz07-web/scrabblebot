@@ -10,8 +10,8 @@ import requests
 
 TOKEN = "8698359891:AAEzbpSztC5A_2VV87zVsUhhI6gFAEct3Cw"
 
-# Download dictionary
-url = "https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt"
+# Common English dictionary
+url = "https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt"
 
 print("Downloading dictionary 😭")
 
@@ -46,10 +46,17 @@ def solve_letters(letters):
         if can_make(word, letters):
             matches.append(word)
 
-    # Prefer longer/common-looking words
-    matches.sort(key=lambda x: (len(x), -x.count("z")), reverse=True)
+    # Filter normal words only
+    filtered = []
 
-    return matches
+    for word in matches:
+        if 3 <= len(word) <= 9:
+            filtered.append(word)
+
+    # Best words first
+    filtered.sort(key=len, reverse=True)
+
+    return filtered[:10]
 
 # Telegram reply
 async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -57,19 +64,28 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     bot_username = context.bot.username.lower()
 
-    # Only reply if tagged
-    if f"@{bot_username}" not in text:
-        return
+    # Group mode → only reply if tagged
+    if update.message.chat.type in ["group", "supergroup"]:
+        if f"@{bot_username}" not in text:
+            return
 
-    # Remove tag
-    text = text.replace(f"@{bot_username}", "").strip()
+        text = text.replace(f"@{bot_username}", "").strip()
 
     words = solve_letters(text)
 
     if words:
         best_word = words[0]
 
-        message = f"🎯 Best Word:\n\n{best_word}"
+        other_words = "\n".join(words[1:])
+
+        if other_words:
+            message = (
+                f"🎯 Best Word:\n{best_word}\n\n"
+                f"📚 Other Words:\n{other_words}"
+            )
+        else:
+            message = f"🎯 Best Word:\n{best_word}"
+
     else:
         message = "No words found 😭"
 
