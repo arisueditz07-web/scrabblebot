@@ -2,6 +2,7 @@ from telegram import Update
 from telegram.ext import (
     Application,
     MessageHandler,
+    CommandHandler,
     ContextTypes,
     filters,
 )
@@ -10,8 +11,8 @@ import requests
 
 TOKEN = "8698359891:AAEzbpSztC5A_2VV87zVsUhhI6gFAEct3Cw"
 
-# Common English dictionary
-url = "https://raw.githubusercontent.com/first20hours/google-10000-english/master/20k.txt"
+# Advanced English dictionary
+url = "https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt"
 
 print("Downloading dictionary 😭")
 
@@ -46,17 +47,53 @@ def solve_letters(letters):
         if can_make(word, letters):
             matches.append(word)
 
-    # Filter normal words only
+    # Filter words
     filtered = []
 
     for word in matches:
-        if 3 <= len(word) <= 9:
+        if 3 <= len(word) <= 15:
             filtered.append(word)
 
     # Best words first
     filtered.sort(key=len, reverse=True)
 
     return filtered[:10]
+
+# Funny /start command
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    message = """
+🎭 WELCOME HUMAN.
+
+I am the legendary Scrabble Goblin 👹
+
+Feed me random letters and I shall summon:
+🧠 giant vocabulary
+📚 cursed English words
+🎯 best Scrabble combos
+
+━━━━━━━━━━━━━━━
+
+✨ PRIVATE CHAT:
+Just send:
+morphology
+
+✨ GROUP CHAT:
+Tag me like:
+morphology @Ducktors_secret_bot
+
+━━━━━━━━━━━━━━━
+
+🏆 First Beta Tester:
+Sᴛʀɪ∂єʀ
+
+━━━━━━━━━━━━━━━
+
+⚠ Warning:
+This bot may expose your friends'
+limited vocabulary 😭
+"""
+
+    await update.message.reply_text(message)
 
 # Telegram reply
 async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -93,6 +130,8 @@ async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Start bot
 app = Application.builder().token(TOKEN).build()
+
+app.add_handler(CommandHandler("start", start))
 
 app.add_handler(
     MessageHandler(filters.TEXT & ~filters.COMMAND, reply)
