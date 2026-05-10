@@ -64,7 +64,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = """
 🎭 WELCOME HUMAN.
 
-I am the Ducktor 👹
+I am the Ducktor 🐥
 
 Feed me random letters and I shall summon:
 🧠 giant vocabulary
