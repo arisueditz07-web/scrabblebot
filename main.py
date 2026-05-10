@@ -10,7 +10,7 @@ import requests
 
 TOKEN = "8698359891:AAEzbpSztC5A_2VV87zVsUhhI6gFAEct3Cw"
 
-# Download full dictionary
+# Download dictionary
 url = "https://raw.githubusercontent.com/dwyl/english-words/master/words_alpha.txt"
 
 print("Downloading dictionary 😭")
@@ -20,7 +20,7 @@ words_text = requests.get(url).text
 dictionary = set(
     word.strip().lower()
     for word in words_text.splitlines()
-    if len(word.strip()) > 1
+    if len(word.strip()) > 2
 )
 
 print("Dictionary loaded 😭")
@@ -46,18 +46,30 @@ def solve_letters(letters):
         if can_make(word, letters):
             matches.append(word)
 
-    matches.sort(key=len, reverse=True)
+    # Prefer longer/common-looking words
+    matches.sort(key=lambda x: (len(x), -x.count("z")), reverse=True)
 
-    return matches[:25]
+    return matches
 
 # Telegram reply
 async def reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text.lower()
 
+    bot_username = context.bot.username.lower()
+
+    # Only reply if tagged
+    if f"@{bot_username}" not in text:
+        return
+
+    # Remove tag
+    text = text.replace(f"@{bot_username}", "").strip()
+
     words = solve_letters(text)
 
     if words:
-        message = "🎯 Found Words:\n\n" + "\n".join(words)
+        best_word = words[0]
+
+        message = f"🎯 Best Word:\n\n{best_word}"
     else:
         message = "No words found 😭"
 
