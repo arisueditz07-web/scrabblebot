@@ -79,7 +79,7 @@ morphology
 
 ✨ GROUP CHAT:
 Tag me like:
-morphology @Ducktors_secret_bot
+morphology @Ducktors_bot
 
 ━━━━━━━━━━━━━━━
 
